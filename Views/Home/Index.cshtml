@@ -99,15 +99,18 @@ else
                                 </a>
                             </div>
 
-                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                            @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Employee")))
                             {
                                 <div class="d-flex gap-2 mt-2">
-                                    <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning w-50 btn-sm d-flex align-items-center justify-content-center">
+                                    <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning @(User.IsInRole("Admin") ? "w-50" : "w-100") btn-sm d-flex align-items-center justify-content-center">
                                         <i class="bi bi-pencil-square me-1"></i> Sửa
                                     </a>
-                                    <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-premium-danger w-50 btn-sm d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-trash me-1"></i> Xóa
-                                    </a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-premium-danger w-50 btn-sm d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-trash me-1"></i> Xóa
+                                        </a>
+                                    }
                                 </div>
                             }
                         </div>
