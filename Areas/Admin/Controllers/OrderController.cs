@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using Baitaptuan5.Models;
 namespace Baitaptuan5.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Employee")]
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,8 +22,17 @@ namespace Baitaptuan5.Areas.Admin.Controllers
         // GET: /Admin/Order
         public async Task<IActionResult> Index()
         {
-            var orders = await _context.Orders
-                .Include(o => o.ApplicationUser)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            IQueryable<Order> query = _context.Orders.Include(o => o.ApplicationUser);
+
+            // If the user is NOT Admin or Employee, filter orders by current user's ID
+            if (!User.IsInRole("Admin") && !User.IsInRole("Employee"))
+            {
+                query = query.Where(o => o.UserId == userId);
+            }
+
+            var orders = await query
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
             return View(orders);
@@ -40,6 +50,16 @@ namespace Baitaptuan5.Areas.Admin.Controllers
             if (order == null)
             {
                 return NotFound();
+            }
+
+            // Security Check: Customers/Companies can only view their own orders
+            if (!User.IsInRole("Admin") && !User.IsInRole("Employee"))
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (order.UserId != userId)
+                {
+                    return Forbid();
+                }
             }
 
             return View(order);
