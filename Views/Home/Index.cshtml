@@ -1,0 +1,149 @@
+@model IEnumerable<Baitaptuan5.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ - Cửa Hàng Sản Phẩm";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 0;
+}
+
+<!-- Hero Section -->
+<div class="glass-panel p-5 mb-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 40%); pointer-events: none;"></div>
+    <h1 class="display-5 fw-extrabold mb-2" style="background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        shop khang
+    </h1>
+    <p class="lead text-secondary max-w-xl mx-auto mb-4">
+        Khám phá các sản phẩm chất lượng cao, thiết bị công nghệ chính hãng và tài liệu học tập phong phú với mức giá ưu đãi nhất.
+    </p>
+
+    <!-- Search Box -->
+    <div class="col-md-7 mx-auto mt-2">
+        <form asp-controller="Home" asp-action="Index" method="get">
+            <div class="input-group search-container">
+                <span class="input-group-text bg-transparent border-0 text-secondary">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="form-control search-input" placeholder="Tìm kiếm theo tên sản phẩm..." />
+                @if (!string.IsNullOrEmpty(ViewBag.CurrentFilter))
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary border-0 text-secondary d-flex align-items-center me-2">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </a>
+                }
+                <button type="submit" class="btn btn-premium-primary px-4">
+                    Tìm kiếm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Title -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 fw-bold mb-0">
+        <i class="bi bi-grid-fill text-info me-2"></i> Danh mục sản phẩm
+    </h2>
+    <span class="text-secondary fs-6">Hiển thị tất cả sản phẩm</span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="glass-panel p-5 text-center my-4">
+        <i class="bi bi-inbox fs-1 text-secondary mb-3 d-block"></i>
+        <h3 class="h5 fw-bold text-light">Không tìm thấy sản phẩm nào</h3>
+        <p class="text-secondary mb-0">Vui lòng thử lại với từ khóa tìm kiếm khác hoặc kiểm tra lại sau.</p>
+    </div>
+}
+else
+{
+    <!-- Product Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="glass-card h-100 d-flex flex-column">
+                    <!-- Product Image -->
+                    <div class="course-image-wrapper">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Name" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60'" />
+                        }
+                        else
+                        {
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" alt="@item.Name" />
+                        }
+                        <span class="course-badge">
+                            <i class="bi bi-bookmark-fill me-1"></i> @(item.Category?.Name ?? "Sản phẩm")
+                        </span>
+                    </div>
+
+                    <!-- Product Content -->
+                    <div class="course-body d-flex flex-column flex-grow-1">
+                        <h3 class="course-title" title="@item.Name">@item.Name</h3>
+                        
+                        <div class="course-meta mb-2 fs-5">
+                            <span class="text-info fw-bold">@item.Price.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ</span>
+                        </div>
+                        
+                        <p class="text-secondary text-truncate-2 flex-grow-1 small" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.5rem; line-height: 1.25;">
+                            @item.Description
+                        </p>
+
+                        <!-- Action Button -->
+                        <div class="mt-3">
+                            <div class="d-flex gap-2">
+                                <a asp-area="Admin" asp-controller="Product" asp-action="Display" asp-route-id="@item.Id" class="btn btn-outline-info w-50 btn-sm d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-eye-fill me-1"></i> Chi tiết
+                                </a>
+                                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@item.Id" asp-route-quantity="1" class="btn btn-premium-primary w-50 btn-sm d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-cart-plus-fill me-1"></i> Thêm giỏ
+                                </a>
+                            </div>
+
+                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                            {
+                                <div class="d-flex gap-2 mt-2">
+                                    <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning w-50 btn-sm d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-pencil-square me-1"></i> Sửa
+                                    </a>
+                                    <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-premium-danger w-50 btn-sm d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-trash me-1"></i> Xóa
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Controls -->
+    @if (totalPages > 1)
+    {
+        <div class="custom-pagination">
+            <a asp-action="Index" 
+               asp-route-page="@(currentPage - 1)" 
+               asp-route-searchString="@ViewBag.CurrentFilter"
+               class="pagination-btn @(currentPage == 1 ? "disabled" : "")">
+                <i class="bi font-weight-bold bi-chevron-left"></i>
+            </a>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <a asp-action="Index" 
+                   asp-route-page="@i" 
+                   asp-route-searchString="@ViewBag.CurrentFilter"
+                   class="pagination-btn @(currentPage == i ? "active" : "")">
+                    @i
+                </a>
+            }
+
+            <a asp-action="Index" 
+               asp-route-page="@(currentPage + 1)" 
+               asp-route-searchString="@ViewBag.CurrentFilter"
+               class="pagination-btn @(currentPage == totalPages ? "disabled" : "")">
+                <i class="bi font-weight-bold bi-chevron-right"></i>
+            </a>
+        </div>
+    }
+}

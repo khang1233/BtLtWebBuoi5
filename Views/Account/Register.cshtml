@@ -1,0 +1,48 @@
+@model Baitaptuan5.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="glass-panel auth-box" style="max-width: 500px;">
+    <div class="auth-header">
+        <h2 class="auth-title fw-bold">Đăng ký tài khoản</h2>
+    </div>
+
+    <form asp-controller="Account" asp-action="Register" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-group custom-form-group mb-3">
+            <input asp-for="Email" class="form-control custom-form-control py-2" placeholder="Email" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group custom-form-group mb-3">
+            <input asp-for="Password" class="form-control custom-form-control py-2" placeholder="Mật khẩu" />
+            <span asp-validation-for="Password" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group custom-form-group mb-3">
+            <input asp-for="ConfirmPassword" class="form-control custom-form-control py-2" placeholder="Xác nhận mật khẩu" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group custom-form-group mb-4">
+            <select asp-for="Role" asp-items="ViewBag.RoleList" class="form-control custom-form-control custom-form-select py-2">
+                <option value="">-- Chọn vai trò --</option>
+            </select>
+            <span asp-validation-for="Role" class="text-danger small"></span>
+        </div>
+
+        <button type="submit" class="btn btn-premium-primary w-100 py-2">
+            Đăng ký
+        </button>
+    </form>
+
+    <div class="text-center mt-4">
+        <p class="text-secondary mb-0 small">Đã có tài khoản? <a asp-action="Login" class="text-info text-decoration-none fw-bold">Đăng nhập ngay</a></p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,113 @@
+@model Baitaptuan5.Models.Order
+@{
+    ViewData["Title"] = $"Chi Tiết Đơn Hàng #{Model.Id} - Admin";
+}
+
+<div class="glass-panel p-5 my-4">
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary">
+        <h2 class="h3 fw-bold mb-0 text-light">
+            <i class="bi bi-info-circle text-info me-2"></i> Chi tiết đơn hàng #@Model.Id
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="p-4 rounded h-100" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
+                <h4 class="h5 fw-bold text-info mb-3">
+                    <i class="bi bi-person-fill me-2"></i> Thông tin khách hàng
+                </h4>
+                <table class="table table-borderless text-light mb-0">
+                    <tr>
+                        <td class="text-secondary ps-0" style="width: 120px;">Họ tên:</td>
+                        <td><strong>@(Model.ApplicationUser?.FullName ?? "N/A")</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary ps-0">Email:</td>
+                        <td>@(Model.ApplicationUser?.Email ?? "N/A")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary ps-0">Số điện thoại:</td>
+                        <td>@(Model.ApplicationUser?.PhoneNumber ?? "N/A")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 rounded h-100" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
+                <h4 class="h5 fw-bold text-info mb-3">
+                    <i class="bi bi-truck me-2"></i> Thông tin giao hàng
+                </h4>
+                <table class="table table-borderless text-light mb-0">
+                    <tr>
+                        <td class="text-secondary ps-0" style="width: 120px;">Địa chỉ nhận:</td>
+                        <td>@Model.ShippingAddress</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary ps-0">Ngày đặt hàng:</td>
+                        <td>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary ps-0">Ghi chú:</td>
+                        <td>
+                            @if (string.IsNullOrEmpty(Model.Notes))
+                            {
+                                <span class="text-secondary italic">Không có ghi chú</span>
+                            }
+                            else
+                            {
+                                @Model.Notes
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="h5 fw-bold text-light mb-3">
+        <i class="bi bi-box-seam me-2"></i> Danh sách sản phẩm đã mua
+    </h4>
+    <div class="table-responsive mb-4">
+        <table class="custom-table text-light">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th style="width: 120px; text-align: center;">Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th class="text-end">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>
+                            <strong class="text-light">@(item.Product?.Name ?? "Sản phẩm đã bị xóa")</strong>
+                        </td>
+                        <td class="text-center">
+                            @item.Quantity
+                        </td>
+                        <td class="text-info fw-bold">
+                            @item.Price.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
+                        </td>
+                        <td class="text-info fw-bold text-end fs-5">
+                            @((item.Price * item.Quantity).ToString("#,##0", new System.Globalization.CultureInfo("vi-VN"))) đ
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4 pt-4 border-top border-secondary">
+        <div class="text-end">
+            <span class="text-secondary fs-5">Tổng cộng đơn hàng:</span>
+            <h3 class="text-info fw-extrabold display-6 mb-0 mt-1">
+                @Model.TotalPrice.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
+            </h3>
+        </div>
+    </div>
+</div>

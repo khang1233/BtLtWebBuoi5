@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Baitaptuan5.Models.Category>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-tags text-info me-2"></i> Danh sách danh mục</h2>
+        <p class="text-secondary mb-0">Quản lý phân loại sản phẩm trong cửa hàng</p>
+    </div>
+    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+    {
+        <a asp-action="Add" class="btn btn-premium-primary">
+            <i class="bi bi-plus-circle me-1"></i> Thêm danh mục mới
+        </a>
+    }
+</div>
+
+<div class="glass-panel p-4" style="max-width: 800px; margin: 0 auto;">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox text-secondary fs-1 d-block mb-3"></i>
+            <h4 class="text-light-emphasis">Chưa có danh mục nào</h4>
+            <p class="text-secondary mb-0">Hãy bấm nút "Thêm danh mục mới" để bắt đầu nhập dữ liệu.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Mã DM</th>
+                        <th style="width: 55%;">Tên danh mục</th>
+                        <th style="width: 25%;" class="text-center">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong class="text-secondary">#@item.Id</strong>
+                            </td>
+                            <td>
+                                <strong class="text-light font-weight-bold">@item.Name</strong>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a asp-action="Display" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                                    {
+                                        <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
