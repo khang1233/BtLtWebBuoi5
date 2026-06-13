@@ -4,110 +4,122 @@
 }
 
 <div class="glass-panel p-5 my-4">
-    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom border-secondary">
+    <div class="text-center mb-5 pb-3 border-bottom border-secondary">
         <h2 class="h3 fw-bold mb-0 text-light">
-            <i class="bi bi-info-circle text-info me-2"></i> Chi tiết đơn hàng #@Model.Id
+            🛒 Chi Tiết Đơn Hàng
         </h2>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
-        </a>
     </div>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="p-4 rounded h-100" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
-                <h4 class="h5 fw-bold text-info mb-3">
-                    <i class="bi bi-person-fill me-2"></i> Thông tin khách hàng
-                </h4>
-                <table class="table table-borderless text-light mb-0">
-                    <tr>
-                        <td class="text-secondary ps-0" style="width: 120px;">Họ tên:</td>
-                        <td><strong>@(Model.ApplicationUser?.FullName ?? "N/A")</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-secondary ps-0">Email:</td>
-                        <td>@(Model.ApplicationUser?.Email ?? "N/A")</td>
-                    </tr>
-                    <tr>
-                        <td class="text-secondary ps-0">Số điện thoại:</td>
-                        <td>@(Model.ApplicationUser?.PhoneNumber ?? "N/A")</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="p-4 rounded h-100" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
-                <h4 class="h5 fw-bold text-info mb-3">
-                    <i class="bi bi-truck me-2"></i> Thông tin giao hàng
-                </h4>
-                <table class="table table-borderless text-light mb-0">
-                    <tr>
-                        <td class="text-secondary ps-0" style="width: 120px;">Địa chỉ nhận:</td>
-                        <td>@Model.ShippingAddress</td>
-                    </tr>
-                    <tr>
-                        <td class="text-secondary ps-0">Ngày đặt hàng:</td>
-                        <td>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                    </tr>
-                    <tr>
-                        <td class="text-secondary ps-0">Ghi chú:</td>
-                        <td>
-                            @if (string.IsNullOrEmpty(Model.Notes))
-                            {
-                                <span class="text-secondary italic">Không có ghi chú</span>
-                            }
-                            else
-                            {
-                                @Model.Notes
-                            }
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <h4 class="h5 fw-bold text-light mb-3">
-        <i class="bi bi-box-seam me-2"></i> Danh sách sản phẩm đã mua
-    </h4>
-    <div class="table-responsive mb-4">
-        <table class="custom-table text-light">
-            <thead>
+    <!-- Thông tin khách hàng -->
+    <div class="mb-5">
+        <h4 class="h5 fw-bold text-info mb-3">
+            🧑 Thông Tin Khách Hàng
+        </h4>
+        <div class="p-3 rounded" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
+            <table class="table table-borderless text-light mb-0">
                 <tr>
-                    <th>Sản phẩm</th>
-                    <th style="width: 120px; text-align: center;">Số lượng</th>
-                    <th>Đơn giá</th>
-                    <th class="text-end">Thành tiền</th>
+                    <td class="text-secondary ps-0" style="width: 180px;">👤 Tên:</td>
+                    <td><strong>@(Model.ApplicationUser?.FullName ?? "N/A")</strong></td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.OrderDetails)
-                {
-                    <tr>
-                        <td>
-                            <strong class="text-light">@(item.Product?.Name ?? "Sản phẩm đã bị xóa")</strong>
-                        </td>
-                        <td class="text-center">
-                            @item.Quantity
-                        </td>
-                        <td class="text-info fw-bold">
-                            @item.Price.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
-                        </td>
-                        <td class="text-info fw-bold text-end fs-5">
-                            @((item.Price * item.Quantity).ToString("#,##0", new System.Globalization.CultureInfo("vi-VN"))) đ
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                <tr>
+                    <td class="text-secondary ps-0">✉️ Email:</td>
+                    <td>@(Model.ApplicationUser?.Email ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary ps-0">📞 Số điện thoại:</td>
+                    <td>@(Model.ApplicationUser?.PhoneNumber ?? "N/A")</td>
+                </tr>
+            </table>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-end mt-4 pt-4 border-top border-secondary">
-        <div class="text-end">
-            <span class="text-secondary fs-5">Tổng cộng đơn hàng:</span>
-            <h3 class="text-info fw-extrabold display-6 mb-0 mt-1">
-                @Model.TotalPrice.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
-            </h3>
+    <!-- Thông tin đặt hàng -->
+    <div class="mb-5">
+        <h4 class="h5 fw-bold text-info mb-3">
+            💼 Thông Tin Đặt Hàng
+        </h4>
+        <div class="p-3 rounded" style="background: rgba(30, 41, 59, 0.35); border: 1px solid var(--glass-border);">
+            <table class="table table-borderless text-light mb-0">
+                <tr>
+                    <td class="text-secondary ps-0" style="width: 180px;">💼 Mã đơn:</td>
+                    <td><strong>#@Model.Id</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-secondary ps-0">📅 Ngày đặt:</td>
+                    <td>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary ps-0">📍 Địa chỉ giao hàng:</td>
+                    <td>@Model.ShippingAddress</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary ps-0">📝 Ghi chú của khách:</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <span class="text-secondary italic">Không có ghi chú</span>
+                        }
+                        else
+                        {
+                            @Model.Notes
+                        }
+                    </td>
+                </tr>
+            </table>
         </div>
+    </div>
+
+    <!-- Sản phẩm trong đơn hàng -->
+    <div class="mb-4">
+        <h4 class="h5 fw-bold text-success mb-3">
+            📦 Sản Phẩm Trong Đơn Hàng
+        </h4>
+        <div class="table-responsive">
+            <table class="custom-table text-light">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th style="width: 100px; text-align: center;">Số lượng</th>
+                        <th>Giá</th>
+                        <th class="text-end">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>
+                                <span class="text-info">#@item.ProductId</span>
+                            </td>
+                            <td>
+                                <strong class="text-light">@(item.Product?.Name ?? "Sản phẩm đã bị xóa")</strong>
+                            </td>
+                            <td class="text-center">
+                                @item.Quantity
+                            </td>
+                            <td class="text-secondary">
+                                @item.Price.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
+                            </td>
+                            <td class="text-info fw-bold text-end">
+                                @((item.Price * item.Quantity).ToString("#,##0", new System.Globalization.CultureInfo("vi-VN"))) đ
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tổng tiền & Nút quay lại -->
+    <div class="d-flex flex-column align-items-center mt-5 pt-4 border-top border-secondary">
+        <div class="w-100 text-end mb-4">
+            <h4 class="text-danger fw-bold fs-4">
+                💰 Tổng tiền: @Model.TotalPrice.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) đ
+            </h4>
+        </div>
+        <a asp-action="Index" class="btn btn-premium-primary px-5 py-2">
+            ⬅️ Quay lại danh sách
+        </a>
     </div>
 </div>
